@@ -2,68 +2,146 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useMemo, useRef, useState } from "react";
+import whoAre from "@/app/who-are-zaeon.png";
 
-import { slideInFromTop } from "@/lib/motion";
-import visiovrlogo from "@/app/visiovrlogo.png";
+export default function Encryption() {
+    const reduced = useMemo(
+        () =>
+            typeof window !== "undefined" &&
+            window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+        []
+    );
 
-export const Encryption = () => {
-  return (
-    <section id="about-us" className="flex flex-row relative items-center justify-center min-h-screen w-full h-full -z-20">
-      <div className="absolute w-auto h-auto top-0 z-[5]">
-        <motion.div
-          variants={slideInFromTop}
-          animate={{
-            y: [0, -10, 0],
-            opacity: [1, 0.8, 1],
-            backgroundImage: [
-              "linear-gradient(90deg, rgba(59,130,246,1), rgba(96,165,250,1), rgba(59,130,246,1))",
-              "linear-gradient(90deg, rgba(147,51,234,1), rgba(232,121,249,1), rgba(147,51,234,1))",
-              "linear-gradient(90deg, rgba(59,130,246,1), rgba(96,165,250,1), rgba(59,130,246,1))"
-            ]
-          }}
-          transition={{
-            duration: 6,
-            ease: "easeInOut",
-            repeat: Infinity
-          }}
-          className="text-[48px] sm:text-[56px] font-light tracking-tight leading-tight text-center text-transparent bg-clip-text select-none bg-gradient-to-r from-blue-400 via-sky-500 to-cyan-400"
+    const sectionRef = useRef<HTMLDivElement | null>(null);
+    const [hovering, setHovering] = useState(false);
+    const [pos, setPos] = useState({ x: 0, y: 0 }); // posição absoluta dentro da section
+
+    const handleMove = (e: React.MouseEvent) => {
+        const rect = sectionRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        // posição do cursor relativa ao container (para posicionar o botão com absolute)
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        setPos({ x, y });
+    };
+
+    const handleClick = () => {
+        // TODO: coloque aqui a ação do botão
+        // exemplo de navegação: window.location.assign("/about");
+        // exemplo de modal: setOpen(true)
+        window.location.assign("/about");
+    };
+
+    return (
+        <section
+            id="about-us"
+            ref={sectionRef}
+            className="relative flex flex-col items-center justify-center min-h-[100vh] w-full overflow-hidden"
         >
-          Mundos sob medida feitos para você.
-        </motion.div>
-      </div>
+            {/* Vídeo de fundo */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <video
+                    className="h-full w-full object-cover"
+                    loop
+                    muted
+                    autoPlay
+                    playsInline
+                    preload="none"
+                >
+                    <source src="/videos/encryption-bg.webm" type="video/webm" />
+                </video>
+            </div>
 
-      <div className="flex flex-col items-center justify-center absolute z-[20] w-auto h-auto top-[58%] sm:top-[60%] md:top-[62%] lg:top-[62%] -translate-y-1/2">
-        <div className="flex flex-col items-center group cursor-pointer w-auto h-auto">
+            {/* Texto principal sobre a imagem (com gradiente animado azul → violeta → verde) */}
+            <motion.div
+                className="absolute top-[14%] z-20 select-none text-center text-transparent bg-clip-text
+                   text-[46px] sm:text-[54px] font-light tracking-tight leading-tight"
+                animate={
+                    reduced
+                        ? {}
+                        : {
+                            y: [0, -8, 0],
+                            opacity: [1, 0.85, 1],
+                            backgroundImage: [
+                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)", // azul → ciano
+                                "linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899)", // azul-violeta
+                                "linear-gradient(90deg,#7c3aed,#8b5cf6,#10b981)", // violeta-verde
+                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)", // volta ao azul
+                            ],
+                        }
+                }
+                transition={
+                    reduced
+                        ? {}
+                        : {
+                            duration: 12,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                        }
+                }
+                style={{
+                    backgroundSize: "200% 100%",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                }}
+            >
+                Agentes de IA vindos de Outra Dimensão.
+            </motion.div>
 
-          <Image
-            src={visiovrlogo}
-            alt="VisioVR Logo"
-            width={160}
-            height={160}
-            className="z-60 relative drop-shadow-[0_0_35px_rgba(112,66,248,0.9)] hover:scale-110 transition-transform duration-700 ease-in-out"
-            priority
-          />
-        </div>
+            {/* Imagem flutuando sobre o vídeo */}
+            <div className="relative z-10 flex items-center justify-center mt-24">
+                <motion.div
+                    onMouseMove={handleMove}
+                    onHoverStart={() => setHovering(true)}
+                    onHoverEnd={() => setHovering(false)}
+                    animate={reduced ? {} : { y: [0, -18, 0] }}
+                    transition={reduced ? {} : { duration: 6, ease: "easeInOut", repeat: Infinity }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 1.02 }}
+                    className="drop-shadow-[0_0_45px_rgba(56,189,248,0.5)] transition-transform duration-700 ease-out"
+                >
+                    <Image
+                        src={whoAre}
+                        alt="Who are Zaeon"
+                        priority
+                        draggable={false}
+                        className="w-[90vw] max-w-[1180px] h-auto select-none"
+                    />
+                </motion.div>
+            </div>
 
-        <div className="Welcome-box px-[15px] py-[4px] z-[20] border mt-[160px] border-[#7042F88B] opacity-[0.9]">
-          <h1 className="text-[18px] leading-relaxed text-gray-200 text-center max-w-[700px]">A Vision VR é uma Startup focada em oferecer tecnologia de ponta por um preço acessivel.
-          Através de avançados algoritmos de IA e mãos habilidosas, entregamos mundos e experiências imersivas para empresas e instituições.</h1>
-        </div>
-      </div>
+            {/* Botão "Saiba mais" que segue o cursor quando sobre a imagem */}
+            <motion.button
+                type="button"
+                onClick={handleClick}
+                // posição absoluta dentro da section, um pouco ACIMA do cursor
+                className="pointer-events-auto absolute z-30 rounded-full px-3.5 py-1.5 text-[12px] font-semibold
+                   text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]
+                   bg-[linear-gradient(135deg,rgba(17,24,39,.9),rgba(30,58,138,.9))]
+                   border border-white/15 backdrop-blur-sm"
+                style={{
+                    left: pos.x,
+                    top: pos.y - 28, // sobe 28px para ficar "em cima" do cursor
+                    transform: "translate(-50%, -100%)",
+                }}
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={
+                    hovering
+                        ? { opacity: 1, scale: 1, x: 0, y: 0 }
+                        : { opacity: 0, scale: 0.92 }
+                }
+                transition={{ type: "spring", stiffness: 360, damping: 30, mass: 0.6 }}
+                aria-label="Saiba mais sobre a Zaeon"
+            >
+                Saiba mais
+            </motion.button>
 
-
-      <div className="w-full flex items-start justify-center absolute">
-        <video
-          loop
-          muted
-          autoPlay
-          playsInline
-          preload="false"
-          className="w-full h-auto"
-        >
-          <source src="/videos/encryption-bg.webm" type="video/webm" />
-        </video>
-      </div>
-    </section>
-  );
-};
+            {/* Vinheta suave para profundidade */}
+            <div
+                className="pointer-events-none absolute inset-0 z-[5]
+                   bg-[radial-gradient(1000px_550px_at_50%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.45)_100%)]"
+            />
+        </section>
+    );
+}

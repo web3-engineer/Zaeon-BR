@@ -1,37 +1,49 @@
+// app/layout.tsx
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import type { PropsWithChildren } from "react";
-
+import type { ReactNode } from "react";
 import { Footer } from "@/components/main/footer";
 import { Navbar } from "@/components/main/navbar";
 import { StarsCanvas } from "@/components/main/star-background";
 import { siteConfig } from "@/config";
 import { cn } from "@/lib/utils";
+import { inter, notoSansSC } from "@/app/fonts";
+import ClientShell from "@/components/ClientShell";
 
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const viewport: Viewport = {
-  themeColor: "#030014",
-};
-
+export const viewport: Viewport = { themeColor: "#030014" };
 export const metadata: Metadata = siteConfig;
 
-export default function RootLayout({ children }: PropsWithChildren) {
-  return (
-    <html lang="en">
-      <body
-        className={cn(
-          "bg-[#030014] overflow-y-scroll overflow-x-hidden",
-          inter.className
-        )}
-      >
-        <StarsCanvas />
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
-    </html>
-  );
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+        <html lang="pt-BR">
+        <head>
+            {/* fonte Matrix global */}
+            <link rel="stylesheet" href={notoSansSC.css} />
+            <script
+                dangerouslySetInnerHTML={{
+                    __html: `
+              document.fonts.ready.then(() => {
+                document.dispatchEvent(new Event("fonts-ready"));
+              });
+            `,
+                }}
+            />
+        </head>
+        <body
+            className={cn(
+                "relative bg-[#030014] text-white overflow-x-hidden overflow-y-scroll",
+                inter.className
+            )}
+        >
+        {/* Splash + hidratação controlada no cliente */}
+        <ClientShell>
+            <StarsCanvas />
+            <Navbar />
+            {children}
+            <Footer />
+        </ClientShell>
+        </body>
+        </html>
+    );
 }

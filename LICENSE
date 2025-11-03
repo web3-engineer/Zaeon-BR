@@ -19,3 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+//npm i -D typescript@5.6.3 @types/node@20 @types/react@18 @types/react-dom@18
+//rm -rf node_modules .next .turbo .vercel dist coverage
+  rm -f tsconfig.tsbuildinfo
+  npm ci

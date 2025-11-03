@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import CONSTS from "@/constants";
 import type { ComponentType } from "react";
-import logoPng from "@/app/apple-icon.png";
+import logoPng from "@/app/zaeon-name.png";
 
 type NavLink = { title: string; link: string };
 type Social = { name: string; link: string; icon?: ComponentType<{ className?: string }> | null };
@@ -25,123 +25,59 @@ export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="w-full h-[72px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001427] backdrop-blur-md z-50 px-10">
-      {/* Navbar Container */}
-      <div className="w-full h-full flex items-center justify-between m-auto px-[10px]">
-        {/* Logo + Name */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src={logoPng}
-            alt="VisioVR logo"
-            width={100}
-            height={100}
-            priority
-            draggable={false}
-            className="h-12 w-auto object-contain"
-            sizes="(max-width: 368px) 48px, 52px"
-          />
-        </Link>
+      <div className="w-full h-[90px] fixed top-0 z-50 flex justify-center items-center">
+        {/* container estilo notch centralizado e mais amplo */}
+        <div className="w-[96%] max-w-[1250px] h-[58px] rounded-3xl backdrop-blur-md bg-[#0a0a0a90] border border-[#1e293b66] shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex items-center justify-between px-10 transition-all duration-300">
 
-        {/* Web Navbar */}
-        <div className="hidden md:flex w-[500px] h-full flex-row items-center justify-between md:mr-20">
-          <div className="flex items-center justify-between w-full h-auto border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] mr-[15px] px-[20px] py-[10px] rounded-full text-gray-200">
-            <Link
-              href="#about-us"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition"
-            >
-              Sobre nós
-            </Link>
-            <Link
-              href="https://example.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition"
-            >
-              Projetos
-            </Link>
+          {/* logo (levemente menor) */}
+          <Link href="/" className="flex items-center justify-center">
+            <Image
+                src={logoPng}
+                alt="zaeonlogo"
+                width={180}
+                height={180}
+                priority
+                draggable={false}
+                className="h-14 w-auto object-contain"
+            />
+          </Link>
 
-            {/* Source Code */}
-            <Link
-              href={LINKS.sourceCode ?? "#"}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition"
-            >
-
+          {/* menu desktop */}
+          <nav className="hidden md:flex justify-center flex-1 gap-12 text-[14px] font-medium text-slate-200 tracking-wide">
+            <Link href="#about-us" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
+              Sobre Nós
             </Link>
-          </div>
+            <Link href="#roadmap" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
+              Roadmap
+            </Link>
+            <Link href="#study-rooms" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
+              Salas de Estudo
+            </Link>
+          </nav>
+
+          {/* menu mobile toggle */}
+          <button
+              className="md:hidden text-white focus:outline-none text-3xl"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            ☰
+          </button>
         </div>
 
-        {/* Social Icons (Web) */}
-        <div className="hidden md:flex flex-row gap-5">
-          {SOCIALS.map(({ link, name, icon: Icon }: Social) => (
-            <Link
-              href={link}
-              target="_blank"
-              rel="noreferrer noopener"
-              key={name}
-            >
-              {Icon ? <Icon className="h-6 w-6 text-white" /> : null}
-            </Link>
-          ))}
-        </div>
-
-        {/* Hamburger Menu */}
-        <button
-          className="md:hidden text-white focus:outline-none text-4xl"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          ☰
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-[72px] left-0 w-full bg-[#030014] p-5 flex flex-col items-center text-gray-300 md:hidden">
-          {/* Links */}
-          <div className="flex flex-col items-center gap-4">
-            <Link
-              href="#about-us"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Sobre nós
-            </Link>
-            <Link
-              href="https://example.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Projetos
-            </Link>
-            <Link
-              href={LINKS.sourceCode ?? "#"}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="cursor-pointer hover:text-[rgb(112,66,248)] transition text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Source Code
-            </Link>
-          </div>
-
-          {/* Social Icons */}
-          <div className="flex justify-center gap-6 mt-6">
-            {SOCIALS.map(({ link, name, icon: Icon }: Social) => (
-              <Link
-                href={link}
-                target="_blank"
-                rel="noreferrer noopener"
-                key={name}
-              >
-                {Icon ? <Icon className="h-8 w-8 text-white" /> : null}
+        {/* menu mobile */}
+        {isMobileMenuOpen && (
+            <div className="absolute top-[90px] left-0 w-full bg-[#0b0b0bcc] backdrop-blur-md p-6 flex flex-col items-center text-gray-300 md:hidden border-t border-[#1e293b80]">
+              <Link href="#about-us" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
+                Sobre Nós
               </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+              <Link href="#roadmap" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
+                Roadmap
+              </Link>
+              <Link href="#study-rooms" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
+                Salas de Estudo
+              </Link>
+            </div>
+        )}
+      </div>
   );
 };
