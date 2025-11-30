@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren, useEffect, useState } from "react";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import MacSplash from "@/components/ui/MacSplash";
 
 export default function ClientShell({ children }: PropsWithChildren) {

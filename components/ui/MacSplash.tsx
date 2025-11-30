@@ -9,6 +9,7 @@ type Props = {
     onDone?: () => void;
     minDurationMs?: number;
     logoSrc?: StaticImageData | string;
+    hint?: string;
 };
 
 export default function MacSplash({
