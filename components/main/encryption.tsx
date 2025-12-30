@@ -2,10 +2,23 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react"; // ADD useEffect
 import whoAre from "@/app/who-are-zaeon.png";
 
+// --- I18N IMPORTS ---
+import { useTranslation } from "react-i18next";
+import "../../src/i18n";
+
 export default function Encryption() {
+    const { t } = useTranslation();
+
+    // --- CORREÇÃO DO ERRO DE HIDRATAÇÃO ---
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    // ----------------------------------------
+
     const reduced = useMemo(
         () =>
             typeof window !== "undefined" &&
@@ -15,23 +28,22 @@ export default function Encryption() {
 
     const sectionRef = useRef<HTMLDivElement | null>(null);
     const [hovering, setHovering] = useState(false);
-    const [pos, setPos] = useState({ x: 0, y: 0 }); // posição absoluta dentro da section
+    const [pos, setPos] = useState({ x: 0, y: 0 });
 
     const handleMove = (e: React.MouseEvent) => {
         const rect = sectionRef.current?.getBoundingClientRect();
         if (!rect) return;
-        // posição do cursor relativa ao container (para posicionar o botão com absolute)
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         setPos({ x, y });
     };
 
     const handleClick = () => {
-        // TODO: coloque aqui a ação do botão
-        // exemplo de navegação: window.location.assign("/about");
-        // exemplo de modal: setOpen(true)
         window.location.assign("/about");
     };
+
+    // Só renderiza depois de montar no cliente para evitar conflito de idioma
+    if (!mounted) return null;
 
     return (
         <section
@@ -53,7 +65,7 @@ export default function Encryption() {
                 </video>
             </div>
 
-            {/* Texto principal sobre a imagem (com gradiente animado azul → violeta → verde) */}
+            {/* Texto principal */}
             <motion.div
                 className="absolute top-[14%] z-20 select-none text-center text-transparent bg-clip-text
                    text-[46px] sm:text-[54px] font-light tracking-tight leading-tight"
@@ -64,10 +76,10 @@ export default function Encryption() {
                             y: [0, -8, 0],
                             opacity: [1, 0.85, 1],
                             backgroundImage: [
-                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)", // azul → ciano
-                                "linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899)", // azul-violeta
-                                "linear-gradient(90deg,#7c3aed,#8b5cf6,#10b981)", // violeta-verde
-                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)", // volta ao azul
+                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)",
+                                "linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899)",
+                                "linear-gradient(90deg,#7c3aed,#8b5cf6,#10b981)",
+                                "linear-gradient(90deg,#3b82f6,#38bdf8,#22d3ee)",
                             ],
                         }
                 }
@@ -86,10 +98,10 @@ export default function Encryption() {
                     WebkitTextFillColor: "transparent",
                 }}
             >
-                Agentes de IA vindos de Outra Dimensão.
+                {t("encryption.title")}
             </motion.div>
 
-            {/* Imagem flutuando sobre o vídeo */}
+            {/* Imagem */}
             <div className="relative z-10 flex items-center justify-center mt-24">
                 <motion.div
                     onMouseMove={handleMove}
@@ -111,18 +123,17 @@ export default function Encryption() {
                 </motion.div>
             </div>
 
-            {/* Botão "Saiba mais" que segue o cursor quando sobre a imagem */}
+            {/* Botão */}
             <motion.button
                 type="button"
                 onClick={handleClick}
-                // posição absoluta dentro da section, um pouco ACIMA do cursor
                 className="pointer-events-auto absolute z-30 rounded-full px-3.5 py-1.5 text-[12px] font-semibold
                    text-white shadow-[0_8px_24px_rgba(0,0,0,0.35)]
                    bg-[linear-gradient(135deg,rgba(17,24,39,.9),rgba(30,58,138,.9))]
                    border border-white/15 backdrop-blur-sm"
                 style={{
                     left: pos.x,
-                    top: pos.y - 28, // sobe 28px para ficar "em cima" do cursor
+                    top: pos.y - 28,
                     transform: "translate(-50%, -100%)",
                 }}
                 initial={{ opacity: 0, scale: 0.92 }}
@@ -132,12 +143,12 @@ export default function Encryption() {
                         : { opacity: 0, scale: 0.92 }
                 }
                 transition={{ type: "spring", stiffness: 360, damping: 30, mass: 0.6 }}
-                aria-label="Saiba mais sobre a Zaeon"
+                aria-label={t("encryption.button")}
             >
-                Saiba mais
+                {t("encryption.button")}
             </motion.button>
 
-            {/* Vinheta suave para profundidade */}
+            {/* Vinheta */}
             <div
                 className="pointer-events-none absolute inset-0 z-[5]
                    bg-[radial-gradient(1000px_550px_at_50%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.45)_100%)]"

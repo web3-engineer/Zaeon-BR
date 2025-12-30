@@ -2,24 +2,36 @@
 
 import React, { useEffect, useRef } from "react";
 
+// South Korean translations of:
+// Luck, Faith, Work, Education, Organization, Honor, Community, Victory, Dreams
 const WORDS = [
-    "教育","学习","知识","智慧","未来","进步","创新","创造","希望","梦想",
-    "成长","勇气","诚信","合作","和平","自由","幸运","感恩","友善","光明","科技"
+    "행운",   // Luck
+    "신념",   // Faith
+    "노력",   // Work (Effort)
+    "교육",   // Education
+    "조직",   // Organization
+    "명예",   // Honor
+    "공동체", // Community
+    "승리",   // Victory
+    "꿈"      // Dreams
 ];
 
-const FONT_FAMILY = `"Noto Sans SC","PingFang SC","Microsoft YaHei",monospace,sans-serif`;
+// Updated font stack to prioritize Korean characters
+const FONT_FAMILY = `"Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", monospace, sans-serif`;
 
-/** Paleta fria — tons de azul e azul esverdeado */
+/** Cold Palette — Blue and Teal tones fitting the VERY ecosystem */
 const PALETTE = [
     "#9ecbff", "#5fb4ff", "#2b8eff", "#1a73e8",
     "#1572a1", "#00a7a7", "#009688", "#33cccc", "#7dd3fc",
 ];
 
 function buildStreamSource() {
-    const specials = ["₿","Ξ","I","C","P"];
+    // Keep the crypto symbols for the ecosystem feel
+    const specials = ["₿","Ξ",];
     const chunks: string[] = [];
     for (let i = 0; i < WORDS.length; i++) {
         chunks.push(WORDS[i]);
+        // Insert crypto symbols at specific intervals
         if (i % 3 === 1) chunks.push("₿");
         if (i % 5 === 2) chunks.push("Ξ");
         if (i % 7 === 3) chunks.push("ICP");
@@ -47,7 +59,7 @@ const MatrixRain: React.FC = () => {
         };
         applyDPR();
 
-        const fontSize = 12;
+        const fontSize = 13; // Slightly larger for legibility of Hangul
         const colWidth = Math.round(fontSize * 1.05);
         let columns = Math.max(8, Math.floor(width / colWidth) - 6);
 
@@ -67,6 +79,7 @@ const MatrixRain: React.FC = () => {
         const TOP_ALPHA = 0.00;
 
         const draw = () => {
+            // Darker fade for sharper contrast
             ctx.globalAlpha = 1.0;
             ctx.fillStyle = "rgba(0,0,0,0.22)";
             ctx.fillRect(0, 0, width, height);
@@ -86,7 +99,8 @@ const MatrixRain: React.FC = () => {
                     const alpha = BASE_ALPHA * (1 - t) + TOP_ALPHA * t;
                     ctx.globalAlpha = alpha;
 
-                    const charIndex = (col.offset + col.y - j + STREAM_SOURCE.length) % STREAM_SOURCE.length;
+                    // Calculate char index safely
+                    const charIndex = (col.offset + Math.floor(col.y) - j + STREAM_SOURCE.length * 100) % STREAM_SOURCE.length;
                     const ch = STREAM_SOURCE.charAt(Math.floor(charIndex));
 
                     ctx.fillText(ch, x, y);
@@ -105,7 +119,7 @@ const MatrixRain: React.FC = () => {
             requestAnimationFrame(draw);
         };
 
-        draw();
+        const animationId = requestAnimationFrame(draw);
 
         const onResize = () => {
             applyDPR();
@@ -120,7 +134,11 @@ const MatrixRain: React.FC = () => {
         };
         const ro = new ResizeObserver(onResize);
         ro.observe(canvas);
-        return () => ro.disconnect();
+
+        return () => {
+            cancelAnimationFrame(animationId);
+            ro.disconnect();
+        };
     }, []);
 
     return (

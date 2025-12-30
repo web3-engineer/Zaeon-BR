@@ -1,7 +1,14 @@
 'use client';
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic"; // Import para SSR
+
+// --- IMPORT CORRIGIDO ---
+import { useTranslation } from "react-i18next";
+// Se Navbar está em src/components/main/, subir 2 níveis chega em src/
+import "../../src/i18n";
 
 import CONSTS from "@/constants";
 import type { ComponentType } from "react";
@@ -21,7 +28,8 @@ const NAV_LINKS: NavLink[] = Array.isArray(RAW?.NAV_LINKS) ? (RAW!.NAV_LINKS as 
 const SOCIALS: Social[] = Array.isArray(RAW?.SOCIALS) ? (RAW!.SOCIALS as Social[]) : [];
 const LINKS: LinksObj = RAW?.LINKS ?? {};
 
-export const Navbar = () => {
+const NavbarComponent = () => {
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -45,13 +53,13 @@ export const Navbar = () => {
           {/* menu desktop */}
           <nav className="hidden md:flex justify-center flex-1 gap-12 text-[14px] font-medium text-slate-200 tracking-wide">
             <Link href="#about-us" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
-              Sobre Nós
+              {t("navbar.about")}
             </Link>
             <Link href="#roadmap" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
-              Roadmap
+              {t("navbar.roadmap")}
             </Link>
             <Link href="#study-rooms" className="hover:text-[#5fb4ff] transition-all duration-200 hover:scale-105">
-              Salas de Estudo
+              {t("navbar.study_rooms")}
             </Link>
           </nav>
 
@@ -68,16 +76,19 @@ export const Navbar = () => {
         {isMobileMenuOpen && (
             <div className="absolute top-[90px] left-0 w-full bg-[#0b0b0bcc] backdrop-blur-md p-6 flex flex-col items-center text-gray-300 md:hidden border-t border-[#1e293b80]">
               <Link href="#about-us" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
-                Sobre Nós
+                {t("navbar.about")}
               </Link>
               <Link href="#roadmap" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
-                Roadmap
+                {t("navbar.roadmap")}
               </Link>
               <Link href="#study-rooms" className="py-2 hover:text-[#5fb4ff]" onClick={() => setIsMobileMenuOpen(false)}>
-                Salas de Estudo
+                {t("navbar.study_rooms")}
               </Link>
             </div>
         )}
       </div>
   );
 };
+
+// Exportar com SSR: false para evitar erro de hidratação
+export const Navbar = dynamic(() => Promise.resolve(NavbarComponent), { ssr: false });
